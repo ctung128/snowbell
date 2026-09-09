@@ -16,7 +16,7 @@
       label: 'Amrita',
       tag: 'solo',
       images: [
-        { src: 'assets/photos/amrita1.JPG', ratio: 0.666 },
+        { src: 'assets/photos/amrita1.JPG', ratio: 1.501 },
         { src: 'assets/photos/amrita2.JPG', ratio: 1.501 },
         { src: 'assets/photos/amrita3.JPG', ratio: 0.666 },
         { src: 'assets/photos/amrita4.JPG', ratio: 0.666 },
@@ -32,7 +32,6 @@
         { src: 'assets/photos/family2.JPG', ratio: 1.5 },
         { src: 'assets/photos/family3.JPG', ratio: 0.667 },
         { src: 'assets/photos/family4.JPG', ratio: 0.667 },
-        { src: 'assets/photos/family5.JPG', ratio: 1.5 },
         { src: 'assets/photos/family6.JPG', ratio: 0.667 },
         { src: 'assets/photos/family7.JPG', ratio: 1.5 },
       ],
