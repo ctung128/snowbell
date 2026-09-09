@@ -426,7 +426,7 @@ h1, h2, h3 { font-family: var(--font-heading); }
     max-width: 9rem;
   }
 
-  .about, .contact { padding: 4rem 1.25rem; }
+  .about, .contact { padding: 4rem 2.5rem; }
 
   .lightbox-prev, .lightbox-next { font-size: 1.8rem; }
 }
