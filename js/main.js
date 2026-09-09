@@ -49,7 +49,6 @@
         { src: 'assets/photos/jocelyn2.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn3.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn4.jpg', ratio: 1.5 },
-        { src: 'assets/photos/jocelyn5.jpg', ratio: 0.667 },
       ],
     },
     {
@@ -58,7 +57,7 @@
       tag: 'solo',
       images: [
         { src: 'assets/photos/steven1.jpg', ratio: 1.5 },
-        { src: 'assets/photos/steven2.jpg', ratio: 1.5 },
+        { src: 'assets/photos/steven2.jpg', ratio: 0.667 },
         { src: 'assets/photos/steven3.jpg', ratio: 1.5 },
       ],
     },
@@ -87,16 +86,10 @@
     galleryBlockEls = [];
     let flatIndex = 0;
 
-    SESSIONS.forEach(({ key, label, tag, images }) => {
+    SESSIONS.forEach(({ label, tag, images }) => {
       const block = document.createElement('div');
       block.className = 'gallery-block';
-      block.dataset.category = key;
       block.dataset.tag = tag;
-
-      const heading = document.createElement('p');
-      heading.className = 'block-label';
-      heading.textContent = label;
-      block.appendChild(heading);
 
       const rowGroup = document.createElement('div');
       rowGroup.className = 'gallery-row-group';
@@ -201,6 +194,19 @@
     });
   }
 
+  // ---------- Header height sync ----------
+  // Keeps --header-h equal to the fixed header's real rendered height, so
+  // the gallery's top padding always clears it exactly (see .work in
+  // styles.css), even as logo/text sizing changes across breakpoints.
+  function syncHeaderHeight() {
+    const header = $('.site-header');
+    const setHeight = () => {
+      document.documentElement.style.setProperty('--header-h', `${header.offsetHeight}px`);
+    };
+    setHeight();
+    window.addEventListener('resize', setHeight);
+  }
+
   // ---------- Scroll progress ----------
   function initScrollProgress() {
     const bar = $('#scrollProgress');
@@ -212,18 +218,6 @@
     }
     document.addEventListener('scroll', update, { passive: true });
     update();
-  }
-
-  // ---------- Category panel (fixed quick-jump to each session) ----------
-  function initCategoryPanel() {
-    $$('.category-item').forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const block = document.querySelector(
-          `.gallery-block[data-category="${btn.dataset.target}"]`
-        );
-        block?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
   }
 
   // ---------- Filter ----------
@@ -366,8 +360,8 @@
   document.addEventListener('DOMContentLoaded', () => {
     renderGallery();
     initMenu();
+    syncHeaderHeight();
     initScrollProgress();
-    initCategoryPanel();
     initFilter();
     initLightbox();
     initContactForm();

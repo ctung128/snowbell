@@ -80,19 +80,14 @@ Before going live, also run `npm audit` in `server/` and keep dependencies patch
 - **Gallery photos/sessions**: edit `SESSIONS` at the top of `js/main.js`. The gallery
   renders one horizontally-scrolling carousel row per entry in `SESSIONS` (currently
   Amrita / Family / Jocelyn / Steven), in the order listed, with every image in its
-  filename order. Each image needs a `ratio` (width ÷ height) — the row renders it at
-  that exact aspect ratio (fixed height, natural width), so photos are never stretched or
-  cropped into the wrong shape.
-  Each session also needs a `tag` (`solo` or `family`) — this is independent of the
-  session's `key`/`label` and drives the Solo/Family filter, so multiple sessions can
-  share a tag (Amrita, Jocelyn, and Steven are all tagged `solo`).
-  To add a session, add an object with a `key`, `label`, `tag`, and `images` array, then
-  add matching markup in `index.html`: a `.category-item` button (with `data-target` set
-  to the session's `key`, inside `#categoryPanel`) — plus a color for its swatch via
-  `.category-item[data-target="..."] { --cat-color: ... }` in `css/styles.css`. If the
-  session introduces a new tag, also add a `.filter-btn` (with `data-filter` set to that
-  tag) inside `#filterOptions`.
-- **Category panel / accent colors**: `#categoryPanel` (fixed bottom-left) holds one
-  colored quick-jump link per session and the FILTER toggle (which filters by `tag`, not
-  by individual session). Each session's color is set via `--cat-color` on its
-  `.category-item` rule in `css/styles.css`.
+  filename order and no visible heading above the row. Each image needs a `ratio`
+  (width ÷ height) — the row renders it at that exact aspect ratio (fixed height, natural
+  width), so photos are never stretched or cropped into the wrong shape. Get the `ratio`
+  wrong (e.g. using a landscape ratio for a portrait photo) and the crop will be badly off.
+  Each session also needs a `tag` (`solo` or `family`) that drives the Solo/Family filter
+  in the bottom-left FILTER panel — multiple sessions can share a tag (Amrita, Jocelyn,
+  and Steven are all tagged `solo`). To add a session, add an object with a `key`,
+  `label`, `tag`, and `images` array; `label` is only used for accessibility text (image
+  `alt` and the lightbox caption). If the session introduces a new tag, also add a
+  `.filter-btn` (with `data-filter` set to that tag) inside `#filterOptions` in
+  `index.html`.
