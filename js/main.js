@@ -38,6 +38,16 @@
       ],
     },
     {
+      key: 'steven',
+      label: 'Steven',
+      tag: 'solo',
+      images: [
+        { src: 'assets/photos/steven1.jpg', ratio: 1.5 },
+        { src: 'assets/photos/steven2.jpg', ratio: 0.667 },
+        { src: 'assets/photos/steven3.jpg', ratio: 1.5 },
+      ],
+    },
+    {
       key: 'jocelyn',
       label: 'Jocelyn',
       tag: 'solo',
@@ -46,16 +56,6 @@
         { src: 'assets/photos/jocelyn2.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn3.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn4.jpg', ratio: 1.5 },
-      ],
-    },
-    {
-      key: 'steven',
-      label: 'Steven',
-      tag: 'solo',
-      images: [
-        { src: 'assets/photos/steven1.jpg', ratio: 1.5 },
-        { src: 'assets/photos/steven2.jpg', ratio: 0.667 },
-        { src: 'assets/photos/steven3.jpg', ratio: 1.5 },
       ],
     },
   ];
