@@ -18,6 +18,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <!-- Preloaded so the <link>s each shadow root adds for its own styling
+       (css/photo-gallery.css, css/contact-form.css) resolve from cache
+       instantly instead of triggering a fresh fetch on first render. -->
+  <link rel="preload" as="style" href="css/photo-gallery.css">
+  <link rel="preload" as="style" href="css/contact-form.css">
   <script type="module" src="js/components/photo-gallery.js"></script>
   <script type="module" src="js/components/contact-form.js"></script>
 </head>

@@ -8,19 +8,17 @@
 // global css/styles.css and keeps targeting those same classes on the
 // slotted (light-DOM) children — `::slotted()` can only style a slotted
 // element itself, never its descendants, so that CSS can't move in here.
+//
+// The host's own styling (css/photo-gallery.css) is loaded via <link> rather
+// than an inline <style>, because the site's CSP has no 'unsafe-inline' for
+// style-src — an inline <style> injected via innerHTML gets silently
+// blocked by the browser even inside a shadow root.
 class PhotoGallery extends HTMLElement {
   constructor() {
     super();
     const shadow = this.attachShadow({ mode: 'open' });
     shadow.innerHTML = `
-      <style>
-        :host {
-          display: flex;
-          flex-direction: column;
-          gap: 2.5rem;
-          padding-bottom: 1rem;
-        }
-      </style>
+      <link rel="stylesheet" href="css/photo-gallery.css">
       <slot></slot>
     `;
     this._observedItems = new WeakSet();

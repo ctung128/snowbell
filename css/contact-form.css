@@ -1,0 +1,86 @@
+/* Styles the <contact-form> shadow root's own markup (fields, honeypot,
+   submit button, status message) — these elements aren't slotted, so
+   they're only reachable from inside the shadow root, unlike the gallery.
+
+   Loaded via <link> rather than an inline <style> tag for the same reason
+   as photo-gallery.css: the site's CSP (style-src, see vercel.json) has no
+   'unsafe-inline', which silently blocks inline styles even inside a
+   shadow root. An external, same-origin stylesheet isn't restricted by
+   style-src 'self'. */
+:host { display: block; }
+
+/* ::selection doesn't cross shadow boundaries, so the global rule in
+   css/styles.css doesn't reach text selected inside this shadow root
+   (e.g. in the message textarea) — redeclared here to match. */
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.field {
+  margin-bottom: 1.25rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+  color: var(--color-muted);
+}
+
+input,
+select,
+textarea {
+  font-family: var(--font-sans);
+  font-size: 1rem;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--color-border);
+  background: #fff;
+  border-radius: 2px;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 0.9rem;
+  background: var(--color-text);
+  color: #fff;
+  border: none;
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-status {
+  margin-top: 1rem;
+  font-size: 0.85rem;
+  min-height: 1.2em;
+}
+
+.form-status.is-error { color: #c0392b; }
+.form-status.is-success { color: #1e8a5f; }

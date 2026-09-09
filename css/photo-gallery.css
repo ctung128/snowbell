@@ -1,0 +1,18 @@
+/* Styles the <photo-gallery> shadow host itself. Loaded via <link> inside
+   the component's shadow root rather than an inline <style> tag, because
+   the site's CSP (style-src, see vercel.json) has no 'unsafe-inline' — an
+   inline <style> injected via innerHTML would be silently blocked by the
+   browser even though it's inside a shadow root (CSP applies across shadow
+   boundaries). An external, same-origin stylesheet isn't restricted by
+   style-src 'self', so this works without weakening the CSP.
+
+   Everything about how a row/item actually looks (.gallery-block,
+   .gallery-row-group, .gallery-item, .gallery-item img) stays in the page's
+   global css/styles.css and keeps targeting those same classes on the
+   slotted (light-DOM) children — this file only owns the host's own box. */
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  padding-bottom: 1rem;
+}

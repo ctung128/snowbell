@@ -6,82 +6,20 @@
 // native <select> support for slotted <option>s — that isn't reliably
 // rendered across browsers (Safari/Firefox in particular), so this avoids a
 // silent, hard-to-notice cross-browser bug in the subject dropdown.
+//
+// The form's own styling (css/contact-form.css) is loaded via <link> rather
+// than an inline <style>, because the site's CSP has no 'unsafe-inline' for
+// style-src — an inline <style> injected via innerHTML gets silently
+// blocked by the browser even inside a shadow root. (This is exactly what
+// broke the first version of this component: the JS ran fine and built the
+// right markup, but every rule in its inline <style> was dropped, so
+// everything rendered with plain browser-default styling.)
 class ContactForm extends HTMLElement {
   constructor() {
     super();
     const shadow = this.attachShadow({ mode: 'open' });
     shadow.innerHTML = `
-      <style>
-        :host { display: block; }
-
-        .field {
-          margin-bottom: 1.25rem;
-          display: flex;
-          flex-direction: column;
-        }
-
-        label {
-          font-size: 0.75rem;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          margin-bottom: 0.4rem;
-          color: var(--color-muted);
-        }
-
-        input,
-        select,
-        textarea {
-          font-family: var(--font-sans);
-          font-size: 1rem;
-          padding: 0.65rem 0.75rem;
-          border: 1px solid var(--color-border);
-          background: #fff;
-          border-radius: 2px;
-        }
-
-        input:focus,
-        select:focus,
-        textarea:focus {
-          outline: 2px solid var(--color-accent);
-          outline-offset: 1px;
-        }
-
-        .honeypot {
-          position: absolute;
-          left: -9999px;
-          width: 1px;
-          height: 1px;
-          overflow: hidden;
-        }
-
-        .submit-btn {
-          width: 100%;
-          padding: 0.9rem;
-          background: var(--color-text);
-          color: #fff;
-          border: none;
-          font-family: var(--font-sans);
-          font-size: 0.85rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          cursor: pointer;
-          transition: opacity 0.2s ease;
-        }
-
-        .submit-btn:disabled {
-          opacity: 0.6;
-          cursor: not-allowed;
-        }
-
-        .form-status {
-          margin-top: 1rem;
-          font-size: 0.85rem;
-          min-height: 1.2em;
-        }
-
-        .form-status.is-error { color: #c0392b; }
-        .form-status.is-success { color: #1e8a5f; }
-      </style>
+      <link rel="stylesheet" href="css/contact-form.css">
 
       <slot name="subjects" hidden></slot>
 

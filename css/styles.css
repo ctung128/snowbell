@@ -4,7 +4,7 @@
   --color-text: #111111;
   --color-muted: #6b6b6b;
   --color-border: #e5e5e5;
-  --color-accent: #4fd1a5;
+  --color-accent: #7FA8CC;
   --header-h: 64px;
   --font-sans: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
   --font-heading: 'Instrument Serif', serif;
@@ -27,6 +27,11 @@ body {
 img { display: block; max-width: 100%; }
 
 a { color: inherit; }
+
+::selection {
+  background: var(--color-accent);
+  color: #fff;
+}
 
 h1, h2, h3, p { margin: 0; }
 
