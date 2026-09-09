@@ -1,1 +1,98 @@
-# snowbell
+# Snow Bell Photo (雪玲) — Portfolio Site
+
+A single-page photography portfolio (plain HTML/CSS/JS, no build step) with a small,
+security-hardened Node/Express API that powers the contact form.
+
+## Structure
+
+```
+index.html          Site markup
+css/styles.css       All styling
+js/main.js           Gallery data + all interactivity (menu, filter, lightbox, form)
+assets/photos/       Web-optimized copies of the studio's real photos + logo.png
+server/              Contact-form API (Express)
+```
+
+`assets/hero.png`, `assets/section1.png`–`section4.png` are layout *references* only
+(screenshots of the inspiration site) — they are not used by the site and can be deleted
+once you're happy with the build.
+
+## Running the frontend locally
+
+No build step needed. From the project root:
+
+```bash
+npx serve .
+```
+
+Open the printed local URL. (Any static file server works — `python3 -m http.server`, the
+VS Code "Live Server" extension, etc.)
+
+## Running the contact-form API locally
+
+```bash
+cd server
+npm install
+cp .env.example .env
+# edit .env with real SMTP credentials and where inquiries should be delivered
+npm start
+```
+
+The frontend posts to `http://localhost:3001/api/contact` (see `CONTACT_ENDPOINT` in
+`js/main.js`) — update that constant if you run the API on a different host/port.
+
+### SMTP credentials
+
+Any SMTP provider works (Gmail with an [app password](https://support.google.com/accounts/answer/185833),
+your domain registrar's email, Mailgun/Postmark/SendGrid SMTP, etc.). Put the host, port,
+and credentials in `server/.env`. Never commit `.env` — it's already git-ignored.
+
+## Security measures already built in (contact API)
+
+- Server-side validation of every field (`express-validator`) — the client-side checks in
+  `main.js` are a UX nicety, not the real defense.
+- Rate limiting: 5 requests / 10 minutes per IP (`express-rate-limit`).
+- Hidden honeypot field (`website`) — real users never see it; bots that fill every field
+  get silently rejected.
+- CORS locked to a single allowed origin (`ALLOWED_ORIGIN` in `.env`), not `*`.
+- Security headers via `helmet` (CSP, `X-Content-Type-Options`, etc.).
+- Request body capped at 10kb to blunt oversized-payload abuse.
+- CR/LF stripped from all fields before they're used in the outgoing email, preventing
+  email header injection.
+- Secrets (SMTP credentials) only ever live in environment variables, never in the
+  frontend bundle or git history.
+- Generic error responses — no stack traces or internals sent to the client.
+
+Before going live, also run `npm audit` in `server/` and keep dependencies patched.
+
+## Deploying
+
+- **Frontend**: any static host — Netlify, Vercel, GitHub Pages, Cloudflare Pages.
+- **API**: any small Node host with HTTPS — Render, Railway, Fly.io. Set the environment
+  variables from `.env.example` in the host's dashboard (never in code). Update
+  `ALLOWED_ORIGIN` to the frontend's real deployed URL, and `CONTACT_ENDPOINT` in
+  `js/main.js` to the API's real deployed URL.
+
+## Customizing
+
+- **Branding/copy**: studio name, tagline, and about/contact text live directly in
+  `index.html` — search for "Snow Bell Photo" and the `about-text` paragraph.
+- **Gallery photos/sessions**: edit `SESSIONS` at the top of `js/main.js`. The gallery
+  renders one horizontally-scrolling carousel row per entry in `SESSIONS` (currently
+  Amrita / Family / Jocelyn / Steven), in the order listed, with every image in its
+  filename order. Each image needs a `ratio` (width ÷ height) — the row renders it at
+  that exact aspect ratio (fixed height, natural width), so photos are never stretched or
+  cropped into the wrong shape.
+  Each session also needs a `tag` (`solo` or `family`) — this is independent of the
+  session's `key`/`label` and drives the Solo/Family filter, so multiple sessions can
+  share a tag (Amrita, Jocelyn, and Steven are all tagged `solo`).
+  To add a session, add an object with a `key`, `label`, `tag`, and `images` array, then
+  add matching markup in `index.html`: a `.category-item` button (with `data-target` set
+  to the session's `key`, inside `#categoryPanel`) — plus a color for its swatch via
+  `.category-item[data-target="..."] { --cat-color: ... }` in `css/styles.css`. If the
+  session introduces a new tag, also add a `.filter-btn` (with `data-filter` set to that
+  tag) inside `#filterOptions`.
+- **Category panel / accent colors**: `#categoryPanel` (fixed bottom-left) holds one
+  colored quick-jump link per session and the FILTER toggle (which filters by `tag`, not
+  by individual session). Each session's color is set via `--cat-color` on its
+  `.category-item` rule in `css/styles.css`.

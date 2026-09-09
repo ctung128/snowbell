@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Snow Bell Photo | 雪玲 — Photography Studio</title>
+  <meta name="description" content="Snow Bell Photo (雪玲) — portrait, family, and editorial photography.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600&family=Noto+Serif+JP:wght@500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Header: fixed brand mark + menu toggle, stays visible over the whole scroll -->
+  <header class="site-header">
+    <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false" aria-controls="siteMenu">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="brand">
+      <img src="assets/photos/logo.png" alt="Snow Bell Photo logo" class="brand-logo">
+      <p class="brand-tagline">Photography Studio</p>
+    </div>
+  </header>
+  <div class="scroll-progress" id="scrollProgress"></div>
+
+  <!-- Full-screen overlay menu -->
+  <nav class="site-menu" id="siteMenu" aria-hidden="true">
+    <ul>
+      <li><a href="#home" data-menu-link>Home</a></li>
+      <li><a href="#work" data-menu-link>Work</a></li>
+      <li><a href="#about" data-menu-link>About</a></li>
+      <li><a href="#contact" data-menu-link>Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Fixed category panel: persists over the whole page (bottom-left), one
+       colored quick-jump indicator per session, plus a FILTER toggle -->
+  <nav class="category-panel" id="categoryPanel" aria-label="Jump to session">
+    <button class="category-item" data-target="amrita">
+      <span class="category-swatch"></span>Amrita
+    </button>
+    <button class="category-item" data-target="family">
+      <span class="category-swatch"></span>Family
+    </button>
+    <button class="category-item" data-target="jocelyn">
+      <span class="category-swatch"></span>Jocelyn
+    </button>
+    <button class="category-item" data-target="steven">
+      <span class="category-swatch"></span>Steven
+    </button>
+
+    <div class="filter-bar">
+      <button class="filter-toggle" id="filterToggle" aria-expanded="false" aria-controls="filterOptions">
+        FILTER <span class="chevron">&rsaquo;</span>
+      </button>
+      <div class="filter-options" id="filterOptions" hidden>
+        <button class="filter-btn is-active" data-filter="all">All</button>
+        <button class="filter-btn" data-filter="solo">Solo</button>
+        <button class="filter-btn" data-filter="family">Family</button>
+      </div>
+    </div>
+  </nav>
+
+  <main id="home">
+
+    <!-- Filterable gallery -->
+    <section id="work" class="work">
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <!-- About -->
+    <section id="about" class="about">
+      <div class="about-inner">
+        <p class="eyebrow">About</p>
+        <h2>Snow Bell Photo <span class="jp">雪玲</span></h2>
+        <p class="about-text">
+          Snow Bell Photo is a portrait and lifestyle photography studio built around natural light,
+          quiet moments, and honest expression. From individual portraits to family sessions and styled
+          editorial work, every shoot is approached with the same care: patient direction, a comfortable
+          pace, and images that feel like the people in them.
+        </p>
+        <p class="about-text about-edit-note">
+          (Studio bio — edit this paragraph in <code>index.html</code> with your own story.)
+        </p>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact">
+      <div class="contact-inner">
+        <p class="eyebrow">Contact</p>
+        <h2>Book a session</h2>
+        <form id="contactForm" class="contact-form" novalidate>
+          <!-- Honeypot field: hidden from real users, bots often fill every field -->
+          <div class="honeypot" aria-hidden="true">
+            <label for="website">Website</label>
+            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required maxlength="100" autocomplete="name">
+          </div>
+
+          <div class="field">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required maxlength="150" autocomplete="email">
+          </div>
+
+          <div class="field">
+            <label for="subject">Session type</label>
+            <select id="subject" name="subject" required>
+              <option value="">Select one</option>
+              <option value="Portrait">Portrait</option>
+              <option value="Family">Family</option>
+              <option value="Graduation">Graduation</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="5" required maxlength="2000"></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn" id="submitBtn">Send Inquiry</button>
+          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Image preview">
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close">&times;</button>
+    <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous image">&lsaquo;</button>
+    <img src="" alt="" id="lightboxImg">
+    <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next image">&rsaquo;</button>
+    <p class="lightbox-caption" id="lightboxCaption"></p>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; <span id="year"></span> Snow Bell Photo (雪玲). All rights reserved.</p>
+    <p class="footer-links">
+      <a href="mailto:hello@snowbellphoto.com">hello@snowbellphoto.com</a>
+      <a href="#" target="_blank" rel="noopener">Instagram</a>
+    </p>
+  </footer>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
