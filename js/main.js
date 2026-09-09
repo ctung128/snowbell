@@ -67,7 +67,11 @@
 
   const SESSION_LABELS = Object.fromEntries(SESSIONS.map(({ key, label }) => [key, label]));
 
-  const CONTACT_ENDPOINT = 'http://localhost:3001/api/contact';
+  // TODO: replace with the real deployed API origin (must be HTTPS) once the
+  // contact-form API is hosted — keep this in sync with connect-src in vercel.json.
+  const CONTACT_ENDPOINT = ['localhost', '127.0.0.1'].includes(location.hostname)
+    ? 'http://localhost:3001/api/contact'
+    : 'https://snowbell-photo.onrender.com/api/contact';
 
   // ---------- Helpers ----------
   const $ = (sel, ctx = document) => ctx.querySelector(sel);

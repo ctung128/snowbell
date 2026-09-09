@@ -63,6 +63,9 @@ function getTransporter() {
     host: process.env.SMTP_HOST,
     port: Number(process.env.SMTP_PORT) || 587,
     secure: process.env.SMTP_SECURE === 'true',
+    // Force IPv4: some hosts (e.g. Render) can't route outbound IPv6, and Gmail's
+    // SMTP hostname resolves to an IPv6 address by default, which then hangs/ENETUNREACH.
+    family: 4,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
