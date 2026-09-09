@@ -66,8 +66,7 @@
 
   const SESSION_LABELS = Object.fromEntries(SESSIONS.map(({ key, label }) => [key, label]));
 
-  // TODO: replace with the real deployed API origin (must be HTTPS) once the
-  // contact-form API is hosted — keep this in sync with connect-src in vercel.json.
+  // Keep in sync with connect-src in vercel.json.
   const CONTACT_ENDPOINT = ['localhost', '127.0.0.1'].includes(location.hostname)
     ? 'http://localhost:3001/api/contact'
     : 'https://snowbell-photo.onrender.com/api/contact';
@@ -77,13 +76,12 @@
   const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
   // ---------- Render: Gallery (grouped by photoshoot session) ----------
-  let galleryItemEls = [];
-  let galleryBlockEls = [];
-
+  // Builds the .gallery-block/.gallery-row-group/.gallery-item markup from
+  // SESSIONS and appends it into <photo-gallery> (js/components/photo-gallery.js),
+  // which owns the row layout, fade-in-on-scroll, and click-to-select behavior
+  // for whatever .gallery-item elements end up inside it.
   function renderGallery() {
-    const grid = $('#galleryGrid');
-    galleryItemEls = [];
-    galleryBlockEls = [];
+    const gallery = $('#gallery');
     let flatIndex = 0;
 
     SESSIONS.forEach(({ label, tag, images }) => {
@@ -95,7 +93,7 @@
       rowGroup.className = 'gallery-row-group';
 
       images.forEach(({ src, ratio }) => {
-        const index = flatIndex++;
+        flatIndex++;
         const div = document.createElement('div');
         div.className = 'gallery-item';
         // Fixed row height + width from the image's own ratio — no flex-grow
@@ -109,36 +107,12 @@
         img.loading = 'lazy';
 
         div.appendChild(img);
-        div.addEventListener('click', () => openLightbox(index));
         rowGroup.appendChild(div);
-        galleryItemEls.push(div);
       });
 
       block.appendChild(rowGroup);
-      grid.appendChild(block);
-      galleryBlockEls.push(block);
+      gallery.appendChild(block);
     });
-
-    observeFadeIn();
-  }
-
-  function observeFadeIn() {
-    if (!('IntersectionObserver' in window)) {
-      galleryItemEls.forEach((el) => el.classList.add('is-visible'));
-      return;
-    }
-    const io = new IntersectionObserver(
-      (entries, obs) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add('is-visible');
-            obs.unobserve(entry.target);
-          }
-        });
-      },
-      { rootMargin: '0px 0px -5% 0px', threshold: 0.05 }
-    );
-    galleryItemEls.forEach((el) => io.observe(el));
   }
 
   // ---------- Menu overlay ----------
@@ -224,6 +198,7 @@
   function initFilter() {
     const toggleBtn = $('#filterToggle');
     const options = $('#filterOptions');
+    const gallery = $('#gallery');
 
     toggleBtn.addEventListener('click', () => {
       const isOpen = !options.hidden;
@@ -236,7 +211,7 @@
         $$('.filter-btn', options).forEach((b) => b.classList.remove('is-active'));
         btn.classList.add('is-active');
         const filter = btn.dataset.filter;
-        galleryBlockEls.forEach((block) => {
+        $$('.gallery-block', gallery).forEach((block) => {
           const match = filter === 'all' || block.dataset.tag === filter;
           block.classList.toggle('is-hidden', !match);
         });
@@ -248,6 +223,8 @@
   let currentLightboxIndex = 0;
 
   function initLightbox() {
+    $('#gallery').addEventListener('photo-select', (e) => openLightbox(e.detail.index));
+
     $('#lightboxClose').addEventListener('click', closeLightbox);
     $('#lightboxPrev').addEventListener('click', () => stepLightbox(-1));
     $('#lightboxNext').addEventListener('click', () => stepLightbox(1));
@@ -294,77 +271,15 @@
     $('#lightboxCaption').textContent = label;
   }
 
-  // ---------- Contact form ----------
-  function initContactForm() {
-    const form = $('#contactForm');
-    const status = $('#formStatus');
-    const submitBtn = $('#submitBtn');
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      status.textContent = '';
-      status.className = 'form-status';
-
-      const data = {
-        name: form.name.value.trim(),
-        email: form.email.value.trim(),
-        subject: form.subject.value,
-        message: form.message.value.trim(),
-        website: form.website.value, // honeypot — must stay empty
-      };
-
-      if (!data.name || !data.email || !data.subject || !data.message) {
-        setStatus('Please fill in all fields.', true);
-        return;
-      }
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(data.email)) {
-        setStatus('Please enter a valid email address.', true);
-        return;
-      }
-
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Sending…';
-
-      try {
-        const res = await fetch(CONTACT_ENDPOINT, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data),
-        });
-
-        if (res.ok) {
-          setStatus('Thanks — your inquiry has been sent. We’ll be in touch soon.', false);
-          form.reset();
-        } else if (res.status === 429) {
-          setStatus('Too many requests — please try again in a few minutes.', true);
-        } else {
-          const body = await res.json().catch(() => ({}));
-          setStatus(body.error || 'Something went wrong. Please try again.', true);
-        }
-      } catch (err) {
-        setStatus('Network error — please check your connection and try again.', true);
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Send Inquiry';
-      }
-    });
-
-    function setStatus(msg, isError) {
-      status.textContent = msg;
-      status.classList.add(isError ? 'is-error' : 'is-success');
-    }
-  }
-
   // ---------- Init ----------
   document.addEventListener('DOMContentLoaded', () => {
     renderGallery();
+    $('#contactForm').setAttribute('endpoint', CONTACT_ENDPOINT);
     initMenu();
     syncHeaderHeight();
     initScrollProgress();
     initFilter();
     initLightbox();
-    initContactForm();
     $('#year').textContent = new Date().getFullYear();
   });
 })();

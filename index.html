@@ -18,6 +18,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=Instrument+Serif:wght@400&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
+  <script type="module" src="js/components/photo-gallery.js"></script>
+  <script type="module" src="js/components/contact-form.js"></script>
 </head>
 <body>
 
@@ -61,7 +63,7 @@
 
     <!-- Filterable gallery -->
     <section id="work" class="work">
-      <div class="gallery-grid" id="galleryGrid"></div>
+      <photo-gallery id="gallery"></photo-gallery>
     </section>
 
     <!-- About -->
@@ -85,42 +87,12 @@
       <div class="contact-inner">
         <p class="eyebrow">Contact</p>
         <h2>Book a session</h2>
-        <form id="contactForm" class="contact-form" novalidate>
-          <!-- Honeypot field: hidden from real users, bots often fill every field -->
-          <div class="honeypot" aria-hidden="true">
-            <label for="website">Website</label>
-            <input type="text" id="website" name="website" tabindex="-1" autocomplete="off">
-          </div>
-
-          <div class="field">
-            <label for="name">Name</label>
-            <input type="text" id="name" name="name" required maxlength="100" autocomplete="name">
-          </div>
-
-          <div class="field">
-            <label for="email">Email</label>
-            <input type="email" id="email" name="email" required maxlength="150" autocomplete="email">
-          </div>
-
-          <div class="field">
-            <label for="subject">Session type</label>
-            <select id="subject" name="subject" required>
-              <option value="">Select one</option>
-              <option value="Portrait">Portrait</option>
-              <option value="Family">Family</option>
-              <option value="Graduation">Graduation</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="message">Message</label>
-            <textarea id="message" name="message" rows="5" required maxlength="2000"></textarea>
-          </div>
-
-          <button type="submit" class="submit-btn" id="submitBtn">Send Inquiry</button>
-          <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
-        </form>
+        <contact-form id="contactForm" endpoint="">
+          <option slot="subjects" value="Portrait">Portrait</option>
+          <option slot="subjects" value="Family">Family</option>
+          <option slot="subjects" value="Graduation">Graduation</option>
+          <option slot="subjects" value="Other">Other</option>
+        </contact-form>
       </div>
     </section>
 
