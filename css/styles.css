@@ -6,8 +6,8 @@
   --color-border: #e5e5e5;
   --color-accent: #4fd1a5;
   --header-h: 64px;
-  --font-sans: 'Jost', 'Helvetica Neue', Arial, sans-serif;
-  --font-jp: 'Noto Serif JP', serif;
+  --font-sans: 'DM Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-heading: 'Instrument Serif', serif;
   --row-h: clamp(220px, 34vw, 480px);
   --gutter: 8px;
 }
@@ -29,6 +29,8 @@ img { display: block; max-width: 100%; }
 a { color: inherit; }
 
 h1, h2, h3, p { margin: 0; }
+
+h1, h2, h3 { font-family: var(--font-heading); }
 
 .eyebrow {
   font-size: 0.75rem;
@@ -296,13 +298,6 @@ h1, h2, h3, p { margin: 0; }
   font-size: clamp(1.6rem, 4vw, 2.4rem);
   font-weight: 500;
   margin-bottom: 1.5rem;
-}
-
-.about .jp {
-  font-family: var(--font-jp);
-  font-size: 0.6em;
-  margin-left: 0.5rem;
-  color: var(--color-muted);
 }
 
 .about-text {

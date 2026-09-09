@@ -21,9 +21,6 @@
         { src: 'assets/photos/amrita3.JPG', ratio: 0.666 },
         { src: 'assets/photos/amrita4.JPG', ratio: 0.666 },
         { src: 'assets/photos/amrita5.JPG', ratio: 0.667 },
-        { src: 'assets/photos/amrita6.JPG', ratio: 0.667 },
-        { src: 'assets/photos/amrita7.JPG', ratio: 1.229 },
-        { src: 'assets/photos/amrita8.JPG', ratio: 1.501 },
       ],
     },
     {
@@ -33,7 +30,7 @@
       images: [
         { src: 'assets/photos/family1.JPG', ratio: 0.667 },
         { src: 'assets/photos/family2.JPG', ratio: 1.5 },
-        { src: 'assets/photos/family3.JPG', ratio: 1.5 },
+        { src: 'assets/photos/family3.JPG', ratio: 0.667 },
         { src: 'assets/photos/family4.JPG', ratio: 0.667 },
         { src: 'assets/photos/family5.JPG', ratio: 1.5 },
         { src: 'assets/photos/family6.JPG', ratio: 0.667 },
