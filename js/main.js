@@ -43,7 +43,7 @@
       images: [
         { src: 'assets/photos/steven1.jpg', ratio: 1.5 },
         { src: 'assets/photos/steven2.jpg', ratio: 0.667 },
-        { src: 'assets/photos/steven3.jpg', ratio: 1.5 },
+        { src: 'assets/photos/steven3.jpeg', ratio: 1.5 },
       ],
     },
     {
@@ -51,10 +51,22 @@
       label: 'Jocelyn',
       tag: 'solo',
       images: [
-        { src: 'assets/photos/jocelyn1.jpg', ratio: 1.5 },
-        { src: 'assets/photos/jocelyn2.jpg', ratio: 0.667 },
+        { src: 'assets/photos/jocelyn1.jpeg', ratio: 1.5 },
+        { src: 'assets/photos/jocelyn2.jpeg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn3.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn4.jpg', ratio: 1.5 },
+      ],
+    },
+    {
+      key: 'dilsah',
+      label: 'Dilsah',
+      tag: 'duo',
+      images: [
+        { src: 'assets/photos/dilsah1.JPG', ratio: 1.5 },
+        { src: 'assets/photos/dilsah2.JPG', ratio: 1.25 },
+        { src: 'assets/photos/dilsah3.JPG', ratio: 0.667 },
+        { src: 'assets/photos/dilsah4.JPG', ratio: 0.667 },
+        { src: 'assets/photos/dilsah5.JPG', ratio: 0.8 },
       ],
     },
   ];
