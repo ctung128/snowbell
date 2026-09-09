@@ -276,6 +276,13 @@ h1, h2, h3 { font-family: var(--font-heading); }
   opacity: 1;
 }
 
+/* Per-photo crop override: shifted down from the default center-30% anchor
+   so her shirt is in frame, while stopping short of the point where there's
+   no breathing room above her head. */
+.gallery-item img[src="assets/photos/jocelyn4.jpg"] {
+  object-position: center 45%;
+}
+
 .gallery-item:hover img {
   transform: scale(1.04);
 }

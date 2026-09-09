@@ -52,9 +52,9 @@
       tag: 'solo',
       images: [
         { src: 'assets/photos/jocelyn1.jpeg', ratio: 1.5 },
+        { src: 'assets/photos/jocelyn4.jpg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn2.jpeg', ratio: 0.667 },
         { src: 'assets/photos/jocelyn3.jpg', ratio: 0.667 },
-        { src: 'assets/photos/jocelyn4.jpg', ratio: 1.5 },
       ],
     },
     {
