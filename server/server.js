@@ -1,5 +1,6 @@
 require('dotenv').config();
 
+const dns = require('dns');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
@@ -56,16 +57,24 @@ const contactValidators = [
   body('website').custom((value) => !value).withMessage('Spam detected.'),
 ];
 
+// nodemailer (as of v10) ignores any `family` option: it always resolves both
+// A and AAAA records for the SMTP host and picks a *random* address to connect
+// to (see nodemailer/lib/shared, resolveHostname/formatDNSValue). On hosts that
+// can't route outbound IPv6 (e.g. Render), that randomly fails with ENETUNREACH
+// or hangs until the connection timeout. Work around it by resolving the A
+// record ourselves and connecting to that literal IPv4 address, with an
+// explicit `servername` so TLS certificate hostname verification still checks
+// against the real hostname rather than the IP.
 let transporter = null;
-function getTransporter() {
+async function getTransporter() {
   if (transporter) return transporter;
+  const host = process.env.SMTP_HOST;
+  const [ipv4Address] = await dns.promises.resolve4(host);
   transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST,
+    host: ipv4Address,
+    servername: host,
     port: Number(process.env.SMTP_PORT) || 587,
     secure: process.env.SMTP_SECURE === 'true',
-    // Force IPv4: some hosts (e.g. Render) can't route outbound IPv6, and Gmail's
-    // SMTP hostname resolves to an IPv6 address by default, which then hangs/ENETUNREACH.
-    family: 4,
     auth: {
       user: process.env.SMTP_USER,
       pass: process.env.SMTP_PASS,
@@ -92,7 +101,8 @@ app.post('/api/contact', contactLimiter, contactValidators, async (req, res) => 
   }
 
   try {
-    await getTransporter().sendMail({
+    const mailer = await getTransporter();
+    await mailer.sendMail({
       from: CONTACT_FROM_EMAIL,
       to: CONTACT_TO_EMAIL,
       replyTo: email,
