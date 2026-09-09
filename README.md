@@ -34,18 +34,24 @@ VS Code "Live Server" extension, etc.)
 cd server
 npm install
 cp .env.example .env
-# edit .env with real SMTP credentials and where inquiries should be delivered
+# edit .env with a real Resend API key and where inquiries should be delivered
 npm start
 ```
 
 The frontend posts to `http://localhost:3001/api/contact` (see `CONTACT_ENDPOINT` in
 `js/main.js`) — update that constant if you run the API on a different host/port.
 
-### SMTP credentials
+### Email delivery (Resend)
 
-Any SMTP provider works (Gmail with an [app password](https://support.google.com/accounts/answer/185833),
-your domain registrar's email, Mailgun/Postmark/SendGrid SMTP, etc.). Put the host, port,
-and credentials in `server/.env`. Never commit `.env` — it's already git-ignored.
+Inquiries are sent via [Resend](https://resend.com)'s HTTPS API rather than raw SMTP —
+some hosts (Render's free/starter tiers included) block outbound SMTP ports as an
+anti-spam measure, which HTTPS sidesteps entirely. Sign up for a free Resend account
+(100 emails/day, 3,000/month — plenty for a contact form), grab an API key, and put it
+in `server/.env` as `RESEND_API_KEY`. Never commit `.env` — it's already git-ignored.
+
+Without a verified domain, `CONTACT_FROM_EMAIL` defaults to Resend's sandbox sender
+(`onboarding@resend.dev`); swap it for an address on your own domain once you've
+[verified one](https://resend.com/docs/dashboard/domains/introduction) with Resend.
 
 ## Security measures already built in (contact API)
 
@@ -59,7 +65,7 @@ and credentials in `server/.env`. Never commit `.env` — it's already git-ignor
 - Request body capped at 10kb to blunt oversized-payload abuse.
 - CR/LF stripped from all fields before they're used in the outgoing email, preventing
   email header injection.
-- Secrets (SMTP credentials) only ever live in environment variables, never in the
+- Secrets (the Resend API key) only ever live in environment variables, never in the
   frontend bundle or git history.
 - Generic error responses — no stack traces or internals sent to the client.
 

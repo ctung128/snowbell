@@ -1,20 +1,24 @@
 require('dotenv').config();
 
-const dns = require('dns');
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
-const nodemailer = require('nodemailer');
 
 const PORT = process.env.PORT || 3001;
 const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:5500';
 const CONTACT_TO_EMAIL = process.env.CONTACT_TO_EMAIL;
-const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || process.env.SMTP_USER;
+// Resend's sandbox sender — swap for an address on your own verified domain
+// once you have one (see https://resend.com/docs/dashboard/domains/introduction).
+const CONTACT_FROM_EMAIL = process.env.CONTACT_FROM_EMAIL || 'onboarding@resend.dev';
+const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
 if (!CONTACT_TO_EMAIL) {
   console.warn('[warn] CONTACT_TO_EMAIL is not set — inquiries have nowhere to be delivered.');
+}
+if (!RESEND_API_KEY) {
+  console.warn('[warn] RESEND_API_KEY is not set — inquiries cannot be delivered.');
 }
 
 const app = express();
@@ -57,30 +61,30 @@ const contactValidators = [
   body('website').custom((value) => !value).withMessage('Spam detected.'),
 ];
 
-// nodemailer (as of v10) ignores any `family` option: it always resolves both
-// A and AAAA records for the SMTP host and picks a *random* address to connect
-// to (see nodemailer/lib/shared, resolveHostname/formatDNSValue). On hosts that
-// can't route outbound IPv6 (e.g. Render), that randomly fails with ENETUNREACH
-// or hangs until the connection timeout. Work around it by resolving the A
-// record ourselves and connecting to that literal IPv4 address, with an
-// explicit `servername` so TLS certificate hostname verification still checks
-// against the real hostname rather than the IP.
-let transporter = null;
-async function getTransporter() {
-  if (transporter) return transporter;
-  const host = process.env.SMTP_HOST;
-  const [ipv4Address] = await dns.promises.resolve4(host);
-  transporter = nodemailer.createTransport({
-    host: ipv4Address,
-    servername: host,
-    port: Number(process.env.SMTP_PORT) || 587,
-    secure: process.env.SMTP_SECURE === 'true',
-    auth: {
-      user: process.env.SMTP_USER,
-      pass: process.env.SMTP_PASS,
+// Sends via Resend's HTTPS API rather than raw SMTP. Some hosts (Render's
+// free/starter tiers included) block outbound SMTP ports as an anti-spam
+// measure — confirmed here by a request that hung the full connection
+// timeout with no response, even to a verified, directly-pinned IPv4
+// address. Sending over plain HTTPS sidesteps that entirely.
+async function sendContactEmail({ name, email, subject, message }) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${RESEND_API_KEY}`,
+      'Content-Type': 'application/json',
     },
+    body: JSON.stringify({
+      from: CONTACT_FROM_EMAIL,
+      to: CONTACT_TO_EMAIL,
+      reply_to: email,
+      subject: `[Snow Bell Photo] New inquiry — ${subject}`,
+      text: `Name: ${name}\nEmail: ${email}\nSession type: ${subject}\n\n${message}`,
+    }),
   });
-  return transporter;
+  if (!res.ok) {
+    const detail = await res.text().catch(() => '');
+    throw new Error(`Resend API responded ${res.status}: ${detail}`);
+  }
 }
 
 app.post('/api/contact', contactLimiter, contactValidators, async (req, res) => {
@@ -96,19 +100,12 @@ app.post('/api/contact', contactLimiter, contactValidators, async (req, res) => 
   const subject = stripHeaderInjection(req.body.subject);
   const message = String(req.body.message).slice(0, 2000);
 
-  if (!CONTACT_TO_EMAIL) {
+  if (!CONTACT_TO_EMAIL || !RESEND_API_KEY) {
     return res.status(500).json({ error: 'Contact form is not configured yet.' });
   }
 
   try {
-    const mailer = await getTransporter();
-    await mailer.sendMail({
-      from: CONTACT_FROM_EMAIL,
-      to: CONTACT_TO_EMAIL,
-      replyTo: email,
-      subject: `[Snow Bell Photo] New inquiry — ${subject}`,
-      text: `Name: ${name}\nEmail: ${email}\nSession type: ${subject}\n\n${message}`,
-    });
+    await sendContactEmail({ name, email, subject, message });
     return res.status(200).json({ ok: true });
   } catch (err) {
     console.error('Failed to send contact email:', err.message);
