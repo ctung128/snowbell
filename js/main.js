@@ -75,18 +75,6 @@
         { src: 'assets/photos/jocelyn3.jpg', ratio: 0.667 },
       ],
     },
-    {
-      key: 'dilsah',
-      label: 'Dilsah',
-      tag: 'duo',
-      images: [
-        { src: 'assets/photos/dilsah1.JPG', ratio: 1.5 },
-        { src: 'assets/photos/dilsah2.JPG', ratio: 1.25 },
-        { src: 'assets/photos/dilsah3.JPG', ratio: 0.667 },
-        { src: 'assets/photos/dilsah4.JPG', ratio: 0.667 },
-        { src: 'assets/photos/dilsah5.JPG', ratio: 0.8 },
-      ],
-    },
   ];
 
   // Flat view of every gallery image in display order — drives the lightbox.
