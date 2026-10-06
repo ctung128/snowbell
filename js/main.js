@@ -33,8 +33,6 @@
         { src: 'assets/photos/xiufam2.jpg', ratio: 1.5 },
         { src: 'assets/photos/xiufam3.jpg', ratio: 0.667 },
         { src: 'assets/photos/xiufam4.jpg', ratio: 1.501 },
-        { src: 'assets/photos/xiufam5.jpg', ratio: 0.629 },
-        { src: 'assets/photos/xiufam6.jpg', ratio: 0.667 },
         { src: 'assets/photos/xiufam7.jpg', ratio: 0.667 },
         { src: 'assets/photos/xiufam9.jpg', ratio: 1.5 },
         { src: 'assets/photos/xiufam10.jpg', ratio: 0.667 },
